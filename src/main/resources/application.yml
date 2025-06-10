@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:musicdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    defer-datasource-initialization: true
+    show-sql: true
+  sql:
+    init:
+      mode: always
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+
+springdoc:
+  group-configs:
+    - group: v1
+      paths-to-match: /api/v1/**
+logging:
+  level:
+    org.springframework.cache: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus   # expose prometheus endpoint (and others as needed)
+  endpoint:
+    prometheus:
+      enabled: true

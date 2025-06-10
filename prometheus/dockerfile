@@ -1,0 +1,6 @@
+FROM prom/prometheus
+
+LABEL maintainer="joydeep.bha@gmail.com"
+
+# Add in the configuration file from the local directory.
+ADD prometheus.yml /etc/prometheus/prometheus.yml
