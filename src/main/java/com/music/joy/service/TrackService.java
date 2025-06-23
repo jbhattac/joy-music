@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class TrackService {
     private final ArtistRepository artistRepo;
 
     @CacheEvict(value = "tracksByArtist", key = "#identifier")
+    @Transactional
     public Track addTrack(String identifier, TrackRequestDto req) {
         Artist artist = artistRepo.findByExternalIdentifier(identifier)
                 .orElseThrow(() -> new ArtistNotFoundException("Artist not found with identifier: " + identifier));
@@ -46,6 +48,7 @@ public class TrackService {
     }
 
     @Cacheable(value = "tracksByArtist", key = "#identifier")
+    @Transactional(readOnly = true)
     public List<TrackResponseDto> getTracksByArtist(String identifier) {
         Artist artist = artistRepo.findByExternalIdentifier(identifier)
                 .orElseThrow(() -> new ArtistNotFoundException("Artist not found with identifier: " + identifier));
