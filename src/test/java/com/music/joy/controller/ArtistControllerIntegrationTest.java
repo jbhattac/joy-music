@@ -96,7 +96,7 @@ public class ArtistControllerIntegrationTest {
     void testGetArtistTracks() {
         // Given
         String externalIdentifier = artistRepository.findAll().get(0).getExternalIdentifier();
-        TrackRequestDto request = new TrackRequestDto("Enchanted", "Pop", 300);
+        TrackRequestDto request = new TrackRequestDto("Enchanted", "Pop", 100);
 
         restTemplate.postForEntity(baseUrl + "/" + externalIdentifier + "/tracks", request, TrackResponseDto.class);
 
@@ -110,5 +110,28 @@ public class ArtistControllerIntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().length).isGreaterThan(0);
+    }
+
+    @Test
+    void testAddTrackToInvalidArtist_ShouldReturnNotFound() {
+        // Given
+        String invalidIdentifier = "non-existent-artist";
+        TrackRequestDto request = new TrackRequestDto("Fake Song", "Rock", 200);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<TrackRequestDto> entity = new HttpEntity<>(request, headers);
+
+        // When
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl + "/" + invalidIdentifier + "/tracks",
+                HttpMethod.POST,
+                entity,
+                String.class
+        );
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).contains("Artist not found");
     }
 }
