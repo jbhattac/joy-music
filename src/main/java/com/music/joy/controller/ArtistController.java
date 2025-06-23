@@ -10,6 +10,7 @@ import com.music.joy.service.ArtistService;
 import com.music.joy.service.TrackService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class ArtistController {
 
 
     @PostMapping("/{identifier}/tracks")
-    public ResponseEntity<TrackResponseDto> addTrack(@Schema(example = "bon-jovi") @PathVariable String identifier, @RequestBody TrackRequestDto req) {
+    public ResponseEntity<TrackResponseDto> addTrack(@Schema(example = "bon-jovi") @PathVariable String identifier, @RequestBody @Valid TrackRequestDto req) {
         final Track track = trackService.addTrack(identifier, req);
         return ResponseEntity.ok(DtoMapper.toDto(track));
     }
