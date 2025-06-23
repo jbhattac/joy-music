@@ -6,6 +6,7 @@ import com.music.joy.model.Artist;
 import com.music.joy.repo.ArtistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class ArtistService {
     private final ArtistStrategyFactory strategyFactory;
 
 
+    @CacheEvict(value = "artistOfPeriod", key = "#period")
     public Artist renameArtist(String identifier, String name) {
         Artist artist = artistRepo.findByExternalIdentifier(identifier)
                 .orElseThrow(() -> new ArtistNotFoundException("No artists available"));
