@@ -33,8 +33,8 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler(ArtistNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse onLongUrlNotFoundException(ArtistNotFoundException exception) {
-        ErrorResponse error = ErrorResponse.builder().status(HttpStatus.NOT_FOUND).debugMessage("Long url not found").build();
+    public ErrorResponse onArtistNotFoundException(ArtistNotFoundException exception) {
+        ErrorResponse error = ErrorResponse.builder().status(HttpStatus.NOT_FOUND).debugMessage("Artist not found").build();
         log.error("ArtistNotFoundException found ", exception);
         return error;
     }
