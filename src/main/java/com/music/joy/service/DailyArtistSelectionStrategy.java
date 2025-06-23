@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Strategy implementation for selecting the "Artist of the Day".
  * Chooses an artist from the list based on the current UTC day.
- * The index is calculated using the epoch day modulo the size of the artist list.
+ * The index is calculated using the day of the month modulo the size of the artist list.
  * This class is registered as a Spring component with the name "day"
  * and is used by the ArtistStrategyFactory.
  */
@@ -19,7 +19,7 @@ public class DailyArtistSelectionStrategy implements ArtistSelectionStrategy {
     @Override
     public Artist select(List<Artist> artists) {
         if (artists.isEmpty()) throw new ArtistNotFoundException("No artists available");
-        int index = (int) (LocalDate.now(ZoneId.of("UTC")).toEpochDay() % artists.size());
+        int index = (LocalDate.now(ZoneId.of("UTC")).getDayOfMonth() % artists.size());
         return artists.get(index);
     }
 }

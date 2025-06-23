@@ -4,13 +4,13 @@ import com.music.joy.controller.dto.ArtistResponseDto;
 import com.music.joy.exception.ArtistNotFoundException;
 import com.music.joy.model.Artist;
 import com.music.joy.repo.ArtistRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class ArtistServiceTest {
 
     @Mock
@@ -41,10 +42,6 @@ class ArtistServiceTest {
     @Captor
     private ArgumentCaptor<Artist> artistCaptor;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void renameArtist_shouldUpdateNameAndIdentifierAndSave() {
@@ -57,7 +54,7 @@ class ArtistServiceTest {
         existingArtist.setExternalIdentifier("bon-jovi");
 
         when(artistRepo.findByExternalIdentifier(oldIdentifier)).thenReturn(Optional.of(existingArtist));
-        when(artistRepo.save(any(Artist.class))).thenAnswer(invocation -> (Artist) invocation.getArgument(0));
+        when(artistRepo.save(any(Artist.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 
         // When
@@ -99,7 +96,7 @@ class ArtistServiceTest {
                 .sorted(Comparator.comparing(Artist::getCreatedAt))
                 .toList();
 
-        Artist expectedArtist = sortedArtists.get((int) (LocalDate.now(ZoneId.of("UTC")).toEpochDay() % sortedArtists.size()));
+        Artist expectedArtist = sortedArtists.get(LocalDate.now(ZoneId.of("UTC")).getDayOfMonth() % sortedArtists.size());
 
         when(artistRepo.findAll()).thenReturn(mockArtists);
         when(strategyFactory.getStrategy(ArtistForPeriod.DAY)).thenReturn(dailyStrategy);
